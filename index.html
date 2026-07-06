@@ -1,17 +1,16 @@
-<div style="font-family: 'Arial Black', Arial, sans-serif; max-width: 680px; margin: 0 auto; color: #000;">
-<style>
-.nb-box{border:3px solid #000;box-shadow:6px 6px 0 #000;background:#fff;padding:20px;margin-bottom:24px;}
-.nb-tag{display:inline-block;border:3px solid #000;padding:4px 12px;font-weight:900;font-size:12px;text-transform:uppercase;box-shadow:3px 3px 0 #000;}
-.nb-btn{border:3px solid #000;background:#FFDE59;color:#000;font-weight:900;text-transform:uppercase;padding:12px 20px;box-shadow:4px 4px 0 #000;cursor:pointer;font-size:14px;}
-.nb-btn:active{transform:translate(4px,4px);box-shadow:0 0 0 #000;}
-.nb-input,.nb-select{border:3px solid #000;padding:10px;font-weight:700;font-size:14px;width:100%;box-sizing:border-box;background:#fff;color:#000;}
-.nb-stat{border:3px solid #000;padding:14px;box-shadow:4px 4px 0 #000;}
-.nb-formula{background:#111;color:#B6F84A;border:3px solid #000;padding:14px;font-family:monospace;font-size:14px;overflow-x:auto;box-shadow:4px 4px 0 #000;}
-h2{font-size:20px;text-transform:uppercase;margin:0 0 14px;}
-#errMsg{display:none;background:#FF8FA3;border:3px solid #000;padding:8px 12px;font-weight:900;font-size:13px;margin-bottom:10px;}
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>☢ HALFLIFE</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
 
-<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">HalfLife calculator draft: pick a birthdate and isotope theme to see decay math, odds, a plain-language explanation, and dynamic fun facts.</h2>
+<div style="max-width:680px;margin:0 auto;color:#000;font-family:'Arial Black',Arial,sans-serif;">
+
+<h2 class="sr-only">HalfLife calculator: pick a birthdate and isotope theme to see decay math, odds, a plain-language explanation, and dynamic fun facts.</h2>
 
 <div class="nb-box" style="background:#FFDE59;text-align:center;">
   <div style="font-size:36px;font-weight:900;letter-spacing:-1px;">☢ HALFLIFE</div>
@@ -39,20 +38,20 @@ h2{font-size:20px;text-transform:uppercase;margin:0 0 14px;}
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:6px;">
     <div>
       <label style="font-weight:900;font-size:12px;text-transform:uppercase;">Birthdate</label>
-      <input type="date" id="dob" class="nb-input" value="2000-01-01">
+      <input type="date" id="dob" class="nb-input" value="2003-06-01">
     </div>
     <div>
       <label style="font-weight:900;font-size:12px;text-transform:uppercase;">Isotope</label>
       <select id="isotope" class="nb-select">
-        <option value="400">Greenland Shark (400 yrs)</option>
-        <option value="5000">Bristlecone Pine (5,000 yrs)</option>
-        <option value="10000" selected>Classic (10,000 yrs)</option>
-        <option value="1000000">Big Blue Star (1,000,000 yrs)</option>
-        <option value="4500000000">Uranium-238 (4.5B yrs)</option>
+        <option value="400">Greenland Shark</option>
+        <option value="5000">Bristlecone Pine</option>
+        <option value="10000" selected>Classic</option>
+        <option value="1000000">Big Blue Star</option>
+        <option value="4500000000">Uranium-238</option>
       </select>
     </div>
   </div>
-  <div style="font-size:12px;font-weight:700;margin-bottom:14px;" id="dobEcho">Selected: 01-01-2000</div>
+  <div style="font-weight:900;font-size:12px;margin-bottom:14px;" id="dobEcho">Selected: 01-06-2003</div>
   <div id="errMsg">Pick a valid birthdate.</div>
   <button type="button" class="nb-btn" id="calcBtn" style="width:100%;">CALCULATE MY DECAY ↯</button>
 </div>
@@ -72,9 +71,65 @@ h2{font-size:20px;text-transform:uppercase;margin:0 0 14px;}
     </div>
   </div>
   <div style="font-size:13px;font-weight:700;margin-bottom:14px;" id="funFact">≈ same as being struck by lightning, every year, forever.</div>
-  <div style="border-top:3px solid #B6F84A;padding-top:12px;">
+
+  <div id="survivalRoll" style="margin-top:14px;border-top:3px solid #B6F84A;padding-top:14px;display:none;">
+    <div style="font-size:11px;color:#B6F84A;font-weight:700;text-transform:uppercase;margin-bottom:8px;">test your atomic luck</div>
+    <div id="rollResult" style="font-size:14px;font-weight:900;margin-bottom:10px;text-align:center;padding:14px;border:3px solid #000;min-height:20px;background:#fff;color:#000;transition:all 0.15s;"></div>
+    <button type="button" class="nb-btn" id="rollBtn" style="width:100%;">TEST MY ATOMIC LUCK FOR THIS YEAR 🎲</button>
+    <div style="font-size:12px;font-weight:700;margin-top:8px;text-align:center;color:#B6F84A;">consecutive years survived: <span id="streakCount">0</span></div>
+  </div>
+
+  <div style="border-top:3px solid #B6F84A;padding-top:12px;margin-top:14px;">
     <div style="font-size:11px;color:#B6F84A;font-weight:700;text-transform:uppercase;margin-bottom:6px;">what this actually means</div>
     <div style="font-size:13px;font-weight:600;line-height:1.6;color:#fff;" id="explainText"></div>
+  </div>
+</div>
+
+<div class="nb-box" id="timeMachineBox" style="display:none;">
+  <h2>FAST FORWARD TIME ⏭️</h2>
+  <div style="font-weight:600;margin-bottom:10px;font-size:13px;">Drag the slider to see how decay progresses through deep time</div>
+  <div class="slider-year-label" id="sliderYearLabel">2026</div>
+  <div style="position:relative;padding:2px 0;">
+    <input type="range" id="timeSlider" min="2026" max="100000" value="2026" step="1">
+  </div>
+  <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:12px;">
+    <span id="sliderMinLabel">2026</span>
+    <span id="sliderMaxLabel">100,000 yrs</span>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+    <div class="nb-stat" style="background:#B6F84A;text-align:center;padding:10px;">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;">% decayed</div>
+      <div style="font-size:20px;font-weight:900;" id="sliderPct">0.0004%</div>
+    </div>
+    <div class="nb-stat" style="background:#7CD6FF;text-align:center;padding:10px;">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;">survival odds</div>
+      <div style="font-size:20px;font-weight:900;" id="sliderSurvival">99.9996%</div>
+    </div>
+    <div class="nb-stat" style="background:#FFC24B;text-align:center;padding:10px;">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;">age</div>
+      <div style="font-size:20px;font-weight:900;" id="sliderAge">26 yrs</div>
+    </div>
+  </div>
+  <button type="button" class="nb-btn" id="autoFfBtn" style="width:100%;margin-top:14px;">▶ AUTO FAST FORWARD</button>
+</div>
+
+<div class="nb-box" id="cohortBox" style="display:none;">
+  <h2>COHORT GRID ☢️</h2>
+  <div style="font-weight:600;margin-bottom:12px;font-size:13px;">
+    1,000 clones born on <span id="cohortBirthdate" style="font-weight:900;">your birthday</span> &mdash; watch them decay as time advances
+  </div>
+  <div id="canvasContainer">
+    <canvas id="cohortCanvas"></canvas>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+    <div class="nb-stat" style="background:#B6F84A;text-align:center;padding:10px;">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;">atoms remaining</div>
+      <div style="font-size:22px;font-weight:900;" id="aliveCount">1,000</div>
+    </div>
+    <div class="nb-stat" style="background:#FFC24B;text-align:center;padding:10px;">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;">year</div>
+      <div style="font-size:22px;font-weight:900;" id="cohortYearLabel">2026</div>
+    </div>
   </div>
 </div>
 
@@ -107,78 +162,15 @@ h2{font-size:20px;text-transform:uppercase;margin:0 0 14px;}
   <div style="font-size:12px;font-weight:700;color:#555;margin-top:6px;">a fun, unserious calculator for very serious questions about mortality</div>
   <div style="font-size:11px;font-weight:700;color:#888;margin-top:10px;">built by aayushrathor &nbsp;&bull;&nbsp; not actuarial advice &nbsp;&bull;&nbsp; share your isotope with a friend</div>
 </div>
-</div>
 
-<script>
-const realWorldOdds = [
-  {label:"struck by lightning, every single year, forever",odds:1/1222000},
-  {label:"dealt a royal flush, every single year, forever",odds:1/649740},
-  {label:"a vending machine mishap, every single year, forever",odds:1/112000000},
-  {label:"finding a four-leaf clover, every single year, forever",odds:1/10000}
-];
-const isotopeFacts = {
-  400: "Real Greenland sharks are thought to live around 400 years, making them the longest-lived vertebrate known.",
-  5000: "Bristlecone pines are among the oldest living organisms on Earth, with some individuals over 4,800 years old.",
-  10000: "10,000 years ago, humans hadn't invented writing yet, and agriculture was just getting started.",
-  1000000: "A million years predates Homo sapiens as a species, which is roughly 300,000 years old.",
-  4500000000: "4.5 billion years is close to the age of the Earth itself and the actual half-life of Uranium-238."
-};
-function nearestOdds(o){
-  let best=realWorldOdds[0],diff=Infinity;
-  for(const r of realWorldOdds){const d=Math.abs(Math.log(r.odds)-Math.log(o));if(d<diff){diff=d;best=r;}}
-  return best;
-}
-function fmtDDMMYYYY(d){
-  const dd=String(d.getDate()).padStart(2,'0');
-  const mm=String(d.getMonth()+1).padStart(2,'0');
-  return dd+'-'+mm+'-'+d.getFullYear();
-}
-function updateEcho(){
-  const val=document.getElementById('dob').value;
-  if(!val) return;
-  const d=new Date(val+'T00:00:00');
-  document.getElementById('dobEcho').textContent='Selected: '+fmtDDMMYYYY(d);
-}
-function calculate(){
-  const errEl=document.getElementById('errMsg');
-  const dobVal=document.getElementById('dob').value;
-  if(!dobVal){errEl.style.display='block';document.getElementById('resultCard').style.display='none';return;}
-  const dob=new Date(dobVal+'T00:00:00');
-  errEl.style.display='none';
-  const halfLife=parseFloat(document.getElementById('isotope').value);
-  const isoSelect=document.getElementById('isotope');
-  const isoText=isoSelect.options[isoSelect.selectedIndex].text;
-  const isoName=isoText.split('(')[0].trim();
-  const now=new Date();
-  const ageYears=Math.max((now-dob)/(1000*60*60*24*365.25),0);
-  const lambda=Math.log(2)/halfLife;
-  const pctDecayed=(1-Math.exp(-lambda*ageYears))*100;
-  const annualDeathOdds=1-Math.exp(-lambda);
-  const oneInX=Math.round(1/annualDeathOdds);
-  const fact=nearestOdds(annualDeathOdds);
-  const meanLifespan=halfLife*1.4427;
-  document.getElementById('isoLabel').textContent=isoName.toUpperCase();
-  document.getElementById('halfLifeOut').textContent=halfLife.toLocaleString()+' years';
-  document.getElementById('pctDecayed').textContent=pctDecayed.toFixed(pctDecayed<0.01?6:4)+'%';
-  document.getElementById('annualOdds').textContent='1 in '+oneInX.toLocaleString();
-  document.getElementById('funFact').textContent='≈ same as being '+fact.label+'.';
-  document.getElementById('explainText').innerHTML=
-    'Born '+fmtDDMMYYYY(dob)+', at age '+ageYears.toFixed(1)+' you have decayed about '+pctDecayed.toFixed(pctDecayed<0.01?6:4)+'% toward the '+isoName+' half-life of '+halfLife.toLocaleString()+' years. '+
-    'That half-life is the age by which half of all people with your isotope would statistically be gone &mdash; it is a median, not a deadline. '+
-    'Each year, your odds of "decaying" stay fixed at 1 in '+oneInX.toLocaleString()+', no matter how old you get, since this model has no aging, only chance. '+
-    'The average (mean) lifespan under this model works out longer than the half-life itself, around '+Math.round(meanLifespan).toLocaleString()+' years, because a small number of very long survivors pull the average up.';
-  document.getElementById('resultCard').style.display='block';
-  const factListEl=document.getElementById('factList');
-  factListEl.innerHTML='<li>'+isotopeFacts[halfLife]+'</li>'+
-    '<li>Your annual odds right now: about the same as being '+fact.label+'.</li>'+
-    '<li>Odds of lightning strike (US, per year): about 1 in 1,222,000</li>'+
-    '<li>Half-life of caffeine in your body: 5-6 hours, for comparison</li>'+
-    '<li>Half-life of a muon: 2.2 microseconds, the fastest decay around</li>';
-}
-document.getElementById('dob').addEventListener('change',updateEcho);
-document.getElementById('calcBtn').addEventListener('click',calculate);
-document.getElementById('isotope').addEventListener('change',function(){
-  if(document.getElementById('resultCard').style.display==='block') calculate();
-});
-updateEcho();
-</script>
+<script src="js/data.js"></script>
+<script src="js/state.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/cohort.js"></script>
+<script src="js/slider.js"></script>
+<script src="js/roll.js"></script>
+<script src="js/main.js"></script>
+</div>
+</body>
+</html>

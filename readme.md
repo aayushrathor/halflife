@@ -4,7 +4,9 @@
 
 A fun, unserious calculator that applies radioactive decay math to human mortality. Pick an isotope, enter your birthdate, and see your personal decay stats — what if humans didn't age, but just had a fixed annual chance of "decaying"?
 
-[Live Demo](https://rathorai.github.io/halflife)
+[![Deploy to GitHub Pages](https://github.com/rathorai/halflife/actions/workflows/deploy.yml/badge.svg)](https://github.com/rathorai/halflife/actions/workflows/deploy.yml)
+
+[Live Demo](https://aayushrathor.github.io/halflife)
 
 ---
 
@@ -109,6 +111,20 @@ Neobrutalist aesthetic throughout:
 - Bold typography (`Arial Black`, uppercase, heavy weight)
 - Press effects on buttons (shift + shadow disappear)
 - Discrete-step spinning icon for loading state
+
+---
+
+## Deployment
+
+The repo includes a [GitHub Actions workflow](.github/workflows/deploy.yml) that auto-deploys to **GitHub Pages** on every push to `main`.
+
+### One-time setup
+
+1. Go to your repo **Settings → Pages**
+2. Under **Source**, select **GitHub Actions**
+3. Push to `main` — the action runs automatically
+
+The site deploys to `https://<user>.github.io/halflife/`.
 
 ---
 

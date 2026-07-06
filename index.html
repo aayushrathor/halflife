@@ -1,0 +1,184 @@
+<div style="font-family: 'Arial Black', Arial, sans-serif; max-width: 680px; margin: 0 auto; color: #000;">
+<style>
+.nb-box{border:3px solid #000;box-shadow:6px 6px 0 #000;background:#fff;padding:20px;margin-bottom:24px;}
+.nb-tag{display:inline-block;border:3px solid #000;padding:4px 12px;font-weight:900;font-size:12px;text-transform:uppercase;box-shadow:3px 3px 0 #000;}
+.nb-btn{border:3px solid #000;background:#FFDE59;color:#000;font-weight:900;text-transform:uppercase;padding:12px 20px;box-shadow:4px 4px 0 #000;cursor:pointer;font-size:14px;}
+.nb-btn:active{transform:translate(4px,4px);box-shadow:0 0 0 #000;}
+.nb-input,.nb-select{border:3px solid #000;padding:10px;font-weight:700;font-size:14px;width:100%;box-sizing:border-box;background:#fff;color:#000;}
+.nb-stat{border:3px solid #000;padding:14px;box-shadow:4px 4px 0 #000;}
+.nb-formula{background:#111;color:#B6F84A;border:3px solid #000;padding:14px;font-family:monospace;font-size:14px;overflow-x:auto;box-shadow:4px 4px 0 #000;}
+h2{font-size:20px;text-transform:uppercase;margin:0 0 14px;}
+#errMsg{display:none;background:#FF8FA3;border:3px solid #000;padding:8px 12px;font-weight:900;font-size:13px;margin-bottom:10px;}
+</style>
+
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">HalfLife calculator draft: pick a birthdate and isotope theme to see decay math, odds, a plain-language explanation, and dynamic fun facts.</h2>
+
+<div class="nb-box" style="background:#FFDE59;text-align:center;">
+  <div style="font-size:36px;font-weight:900;letter-spacing:-1px;">☢ HALFLIFE</div>
+  <div style="font-weight:700;margin-top:6px;">radioactive decay, but it's your lifespan</div>
+</div>
+
+<div class="nb-box">
+  <h2>the theory</h2>
+  <p style="font-weight:600;line-height:1.6;">Radioactive atoms don't age. Each one has a fixed chance of decaying per year, no matter how old it is. What if humans worked the same way? No aging &mdash; just a fixed annual chance of "decaying." Pick a long enough half-life and you're functionally immortal, just not guaranteed.</p>
+  <div class="nb-formula">N(t) = N&#8320; &middot; e^(-&lambda;t)&nbsp;&nbsp;&nbsp;&nbsp;&lambda; = ln(2) / half-life</div>
+</div>
+
+<div class="nb-box">
+  <h2>the formulas</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+    <div class="nb-stat" style="background:#B6F84A;"><b>Survival odds</b><br><span style="font-family:monospace;">e^(-&lambda;t)</span></div>
+    <div class="nb-stat" style="background:#7CD6FF;"><b>Annual death odds</b><br><span style="font-family:monospace;">1 - e^(-&lambda;)</span></div>
+    <div class="nb-stat" style="background:#FF8FA3;"><b>Median lifespan</b><br>= the half-life itself</div>
+    <div class="nb-stat" style="background:#FFC24B;"><b>Mean lifespan</b><br>&approx; half-life &times; 1.443</div>
+  </div>
+</div>
+
+<div class="nb-box">
+  <h2>try it</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:6px;">
+    <div>
+      <label style="font-weight:900;font-size:12px;text-transform:uppercase;">Birthdate</label>
+      <input type="date" id="dob" class="nb-input" value="2000-01-01">
+    </div>
+    <div>
+      <label style="font-weight:900;font-size:12px;text-transform:uppercase;">Isotope</label>
+      <select id="isotope" class="nb-select">
+        <option value="400">Greenland Shark (400 yrs)</option>
+        <option value="5000">Bristlecone Pine (5,000 yrs)</option>
+        <option value="10000" selected>Classic (10,000 yrs)</option>
+        <option value="1000000">Big Blue Star (1,000,000 yrs)</option>
+        <option value="4500000000">Uranium-238 (4.5B yrs)</option>
+      </select>
+    </div>
+  </div>
+  <div style="font-size:12px;font-weight:700;margin-bottom:14px;" id="dobEcho">Selected: 01-01-2000</div>
+  <div id="errMsg">Pick a valid birthdate.</div>
+  <button type="button" class="nb-btn" id="calcBtn" style="width:100%;">CALCULATE MY DECAY ↯</button>
+</div>
+
+<div class="nb-box" id="resultCard" style="background:#111;color:#fff;display:none;">
+  <div class="nb-tag" style="background:#B6F84A;color:#000;margin-bottom:14px;" id="isoLabel">CLASSIC</div>
+  <div style="font-size:13px;font-weight:700;color:#B6F84A;text-transform:uppercase;">half-life</div>
+  <div style="font-size:30px;font-weight:900;margin-bottom:14px;" id="halfLifeOut">10,000 years</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+    <div style="border:3px solid #fff;padding:10px;">
+      <div style="font-size:11px;color:#B6F84A;font-weight:700;text-transform:uppercase;">% decayed now</div>
+      <div style="font-size:20px;font-weight:900;" id="pctDecayed">0.0004%</div>
+    </div>
+    <div style="border:3px solid #fff;padding:10px;">
+      <div style="font-size:11px;color:#B6F84A;font-weight:700;text-transform:uppercase;">annual odds</div>
+      <div style="font-size:20px;font-weight:900;" id="annualOdds">1 in 14,427</div>
+    </div>
+  </div>
+  <div style="font-size:13px;font-weight:700;margin-bottom:14px;" id="funFact">≈ same as being struck by lightning, every year, forever.</div>
+  <div style="border-top:3px solid #B6F84A;padding-top:12px;">
+    <div style="font-size:11px;color:#B6F84A;font-weight:700;text-transform:uppercase;margin-bottom:6px;">what this actually means</div>
+    <div style="font-size:13px;font-weight:600;line-height:1.6;color:#fff;" id="explainText"></div>
+  </div>
+</div>
+
+<div class="nb-box" id="factBox">
+  <h2>fun fact bank</h2>
+  <ul id="factList" style="font-weight:600;line-height:1.9;margin:0;padding-left:20px;">
+    <li>Odds of lightning strike (US, per year): about 1 in 1,222,000</li>
+    <li>Odds of a vending machine death: about 1 in 112,000,000</li>
+    <li>Half-life of caffeine in your body: 5-6 hours</li>
+    <li>Half-life of Carbon-14: 5,730 years &mdash; archaeology's favorite clock</li>
+    <li>Half-life of a muon: 2.2 microseconds, the fastest decay around</li>
+  </ul>
+</div>
+
+<div class="nb-box">
+  <h2>more about radioactivity</h2>
+  <ul style="font-weight:600;line-height:1.9;margin:0;padding-left:20px;">
+    <li>Marie Curie coined the term "radioactivity" in 1898 while studying uranium ores, and discovered polonium and radium along the way.</li>
+    <li>Bananas are mildly radioactive because of potassium-40 &mdash; the running joke unit "banana equivalent dose" compares everyday radiation exposure to eating one banana.</li>
+    <li>Technetium-99m, with a half-life of about 6 hours, is one of the most widely used isotopes in medical imaging because it decays almost fully out of the body within a couple of days.</li>
+    <li>Some isotopes have half-lives measured in fractions of a second (like polonium-214 at 164 microseconds), while others, like bismuth-209, take over a billion times the age of the universe to decay.</li>
+    <li>Smoke detectors commonly contain a tiny amount of americium-241, which has a half-life of about 432 years.</li>
+    <li>The half-lives of different isotopes span more than 40 orders of magnitude &mdash; from microseconds to longer than the universe has existed.</li>
+    <li>Radioactive decay is truly random at the level of a single atom &mdash; nobody can predict when one specific atom will decay, only the odds for a large group over time.</li>
+  </ul>
+</div>
+
+<div style="text-align:center;padding:24px 20px;border-top:3px solid #000;">
+  <div style="font-size:16px;font-weight:900;text-transform:uppercase;">☢ HALFLIFE</div>
+  <div style="font-size:12px;font-weight:700;color:#555;margin-top:6px;">a fun, unserious calculator for very serious questions about mortality</div>
+  <div style="font-size:11px;font-weight:700;color:#888;margin-top:10px;">built by aayushrathor &nbsp;&bull;&nbsp; not actuarial advice &nbsp;&bull;&nbsp; share your isotope with a friend</div>
+</div>
+</div>
+
+<script>
+const realWorldOdds = [
+  {label:"struck by lightning, every single year, forever",odds:1/1222000},
+  {label:"dealt a royal flush, every single year, forever",odds:1/649740},
+  {label:"a vending machine mishap, every single year, forever",odds:1/112000000},
+  {label:"finding a four-leaf clover, every single year, forever",odds:1/10000}
+];
+const isotopeFacts = {
+  400: "Real Greenland sharks are thought to live around 400 years, making them the longest-lived vertebrate known.",
+  5000: "Bristlecone pines are among the oldest living organisms on Earth, with some individuals over 4,800 years old.",
+  10000: "10,000 years ago, humans hadn't invented writing yet, and agriculture was just getting started.",
+  1000000: "A million years predates Homo sapiens as a species, which is roughly 300,000 years old.",
+  4500000000: "4.5 billion years is close to the age of the Earth itself and the actual half-life of Uranium-238."
+};
+function nearestOdds(o){
+  let best=realWorldOdds[0],diff=Infinity;
+  for(const r of realWorldOdds){const d=Math.abs(Math.log(r.odds)-Math.log(o));if(d<diff){diff=d;best=r;}}
+  return best;
+}
+function fmtDDMMYYYY(d){
+  const dd=String(d.getDate()).padStart(2,'0');
+  const mm=String(d.getMonth()+1).padStart(2,'0');
+  return dd+'-'+mm+'-'+d.getFullYear();
+}
+function updateEcho(){
+  const val=document.getElementById('dob').value;
+  if(!val) return;
+  const d=new Date(val+'T00:00:00');
+  document.getElementById('dobEcho').textContent='Selected: '+fmtDDMMYYYY(d);
+}
+function calculate(){
+  const errEl=document.getElementById('errMsg');
+  const dobVal=document.getElementById('dob').value;
+  if(!dobVal){errEl.style.display='block';document.getElementById('resultCard').style.display='none';return;}
+  const dob=new Date(dobVal+'T00:00:00');
+  errEl.style.display='none';
+  const halfLife=parseFloat(document.getElementById('isotope').value);
+  const isoSelect=document.getElementById('isotope');
+  const isoText=isoSelect.options[isoSelect.selectedIndex].text;
+  const isoName=isoText.split('(')[0].trim();
+  const now=new Date();
+  const ageYears=Math.max((now-dob)/(1000*60*60*24*365.25),0);
+  const lambda=Math.log(2)/halfLife;
+  const pctDecayed=(1-Math.exp(-lambda*ageYears))*100;
+  const annualDeathOdds=1-Math.exp(-lambda);
+  const oneInX=Math.round(1/annualDeathOdds);
+  const fact=nearestOdds(annualDeathOdds);
+  const meanLifespan=halfLife*1.4427;
+  document.getElementById('isoLabel').textContent=isoName.toUpperCase();
+  document.getElementById('halfLifeOut').textContent=halfLife.toLocaleString()+' years';
+  document.getElementById('pctDecayed').textContent=pctDecayed.toFixed(pctDecayed<0.01?6:4)+'%';
+  document.getElementById('annualOdds').textContent='1 in '+oneInX.toLocaleString();
+  document.getElementById('funFact').textContent='≈ same as being '+fact.label+'.';
+  document.getElementById('explainText').innerHTML=
+    'Born '+fmtDDMMYYYY(dob)+', at age '+ageYears.toFixed(1)+' you have decayed about '+pctDecayed.toFixed(pctDecayed<0.01?6:4)+'% toward the '+isoName+' half-life of '+halfLife.toLocaleString()+' years. '+
+    'That half-life is the age by which half of all people with your isotope would statistically be gone &mdash; it is a median, not a deadline. '+
+    'Each year, your odds of "decaying" stay fixed at 1 in '+oneInX.toLocaleString()+', no matter how old you get, since this model has no aging, only chance. '+
+    'The average (mean) lifespan under this model works out longer than the half-life itself, around '+Math.round(meanLifespan).toLocaleString()+' years, because a small number of very long survivors pull the average up.';
+  document.getElementById('resultCard').style.display='block';
+  const factListEl=document.getElementById('factList');
+  factListEl.innerHTML='<li>'+isotopeFacts[halfLife]+'</li>'+
+    '<li>Your annual odds right now: about the same as being '+fact.label+'.</li>'+
+    '<li>Odds of lightning strike (US, per year): about 1 in 1,222,000</li>'+
+    '<li>Half-life of caffeine in your body: 5-6 hours, for comparison</li>'+
+    '<li>Half-life of a muon: 2.2 microseconds, the fastest decay around</li>';
+}
+document.getElementById('dob').addEventListener('change',updateEcho);
+document.getElementById('calcBtn').addEventListener('click',calculate);
+document.getElementById('isotope').addEventListener('change',function(){
+  if(document.getElementById('resultCard').style.display==='block') calculate();
+});
+updateEcho();
+</script>

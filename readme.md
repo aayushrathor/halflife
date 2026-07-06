@@ -4,8 +4,6 @@
 
 A fun, unserious calculator that applies radioactive decay math to human mortality. Pick an isotope, enter your birthdate, and see your personal decay stats — what if humans didn't age, but just had a fixed annual chance of "decaying"?
 
-[![Deploy to GitHub Pages](https://github.com/rathorai/halflife/actions/workflows/deploy.yml/badge.svg)](https://github.com/rathorai/halflife/actions/workflows/deploy.yml)
-
 [Live Demo](https://aayushrathor.github.io/halflife)
 
 ---

@@ -22,6 +22,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Remove stale artifact
+        run: |
+          gh api repos/${{ github.repository }}/actions/artifacts \
+            --jq '.artifacts[] | select(.name == "github-pages" and .expired == false) | .id' \
+            | xargs -I {} gh api repos/${{ github.repository }}/actions/artifacts/{}/delete -X DELETE
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

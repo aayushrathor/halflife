@@ -1,13 +1,16 @@
+/** Find the closest real-world odds match for comparison output @param {number} o @returns {{label:string,odds:number}} */
 function nearestOdds(o){
   let best=realWorldOdds[0],diff=Infinity;
   for(const r of realWorldOdds){const d=Math.abs(Math.log(r.odds)-Math.log(o));if(d<diff){diff=d;best=r;}}
   return best;
 }
+/** Format a Date object as DD-MM-YYYY string @param {Date} d @returns {string} */
 function fmtDDMMYYYY(d){
   const dd=String(d.getDate()).padStart(2,'0');
   const mm=String(d.getMonth()+1).padStart(2,'0');
   return dd+'-'+mm+'-'+d.getFullYear();
 }
+/** Compute decay statistics for a given age and isotope half-life @param {number} ageYears @param {number} halfLife @returns {{lambda:number,pctDecayed:number,annualDeathOdds:number,oneInX:number,survivalOdds:number,meanLifespan:number}} */
 function computeStats(ageYears, halfLife){
   const lambda=Math.log(2)/halfLife;
   const pctDecayed=Math.min((1-Math.exp(-lambda*ageYears))*100,100);

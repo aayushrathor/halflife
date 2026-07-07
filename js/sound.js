@@ -1,5 +1,7 @@
 let audioCtx = null;
+/** Play a Geiger counter click (survive) or descending death tone (decay) via Web Audio API @param {boolean} death */
 function playGeiger(death){
+  if(muted) return;
   try{
     if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
     if(audioCtx.state==='suspended') audioCtx.resume();
@@ -31,5 +33,5 @@ function playGeiger(death){
       osc2.connect(gain2).connect(audioCtx.destination);
       osc2.start();osc2.stop(audioCtx.currentTime+0.07);
     }
-  }catch(e){}
+  }catch(e){} // eslint-disable-line no-unused-vars,no-empty
 }

@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>☢ HALFLIFE — Radioactive Decay Calculator for Your Lifespan</title>
+<title>HALFLIFE — Radioactive Decay Calculator for Your Lifespan</title>
 <meta name="description" content="What if humans decayed like isotopes? Enter your birthdate, pick a half-life theme, and see your personal decay stats — annual odds, survival probability, and a cohort of 1,000 clones.">
 <meta property="og:site_name" content="HALFLIFE">
-<meta property="og:title" content="☢ HALFLIFE">
+<meta property="og:title" content="HALFLIFE">
 <meta property="og:description" content="Radioactive decay, but it's your lifespan. Pick an isotope, enter your birthdate, and see how much you've decayed.">
 <meta property="og:image" content="https://aayushrathor.github.io/halflife/assets/og-image.svg">
 <meta property="og:image:width" content="1200">
@@ -14,47 +14,70 @@
 <meta property="og:url" content="https://aayushrathor.github.io/halflife/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="☢ HALFLIFE">
+<meta name="twitter:title" content="HALFLIFE">
 <meta name="twitter:description" content="Radioactive decay, but it's your lifespan. Pick an isotope, enter your birthdate, and see how much you've decayed.">
 <meta name="twitter:image" content="https://aayushrathor.github.io/halflife/assets/og-image.svg">
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-<div style="max-width:680px;margin:0 auto;color:#000;font-family:'Arial Black',Arial,sans-serif;">
+<canvas id="cursorCanvas"></canvas>
+
+
+
+<div style="max-width:680px;margin:0 auto;color:var(--text);font-family:'Arial Black',Arial,sans-serif;">
 
 <h2 class="sr-only">HalfLife calculator: pick a birthdate and isotope theme to see decay math, odds, a plain-language explanation, and dynamic fun facts.</h2>
 
-<div class="nb-box" style="background:#FFDE59;text-align:center;">
-  <div style="font-size:36px;font-weight:900;letter-spacing:-1px;">☢ HALFLIFE</div>
-  <div style="font-weight:700;margin-top:6px;">radioactive decay, but it's your lifespan</div>
+<div class="nb-box" style="background:var(--accent);text-align:center;">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <div style="font-size:var(--fs-hero);font-weight:var(--fw-b);letter-spacing:-1px;">HALFLIFE</div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <select id="themeSelect" class="nb-theme-select" title="Theme">
+        <option value="classic">CLASSIC</option>
+        <option value="midnight">MIDNIGHT</option>
+        <option value="fallout">FALLOUT</option>
+        <option value="neon">NEON</option>
+        <option value="retro">RETRO</option>
+        <option value="ghost">GHOST</option>
+      </select>
+      <button type="button" id="soundToggle" class="nb-sound-toggle" title="Toggle sound"><span class="emoji-icon">🔊</span></button>
+    </div>
+  </div>
+  <div style="font-weight:var(--fw-sb);margin-top:6px;">radioactive decay, but it's your lifespan</div>
 </div>
 
 <div class="nb-box">
   <h2>the theory</h2>
-  <p style="font-weight:600;line-height:1.6;">Radioactive atoms don't age. Each one has a fixed chance of decaying per year, no matter how old it is. What if humans worked the same way? No aging &mdash; just a fixed annual chance of "decaying." Pick a long enough half-life and you're functionally immortal, just not guaranteed.</p>
+  <p style="font-weight:var(--fw-m);line-height:1.6;">Radioactive atoms don't age. Each one has a fixed chance of decaying per year, no matter how old it is. What if humans worked the same way? No aging &mdash; just a fixed annual chance of "decaying." Pick a long enough half-life and you're functionally immortal, just not guaranteed.</p>
   <div class="nb-formula">N(t) = N&#8320; &middot; e^(-&lambda;t)&nbsp;&nbsp;&nbsp;&nbsp;&lambda; = ln(2) / half-life</div>
 </div>
 
 <div class="nb-box">
   <h2>the formulas</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-    <div class="nb-stat" style="background:#B6F84A;"><b>Survival odds</b><br><span style="font-family:monospace;">e^(-&lambda;t)</span></div>
-    <div class="nb-stat" style="background:#7CD6FF;"><b>Annual death odds</b><br><span style="font-family:monospace;">1 - e^(-&lambda;)</span></div>
-    <div class="nb-stat" style="background:#FF8FA3;"><b>Median lifespan</b><br>= the half-life itself</div>
-    <div class="nb-stat" style="background:#FFC24B;"><b>Mean lifespan</b><br>&approx; half-life &times; 1.443</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);">
+    <div class="nb-stat" style="background:var(--green);"><b>Survival odds</b><br><span style="font-family:monospace;">e^(-&lambda;t)</span></div>
+    <div class="nb-stat" style="background:var(--blue);"><b>Annual death odds</b><br><span style="font-family:monospace;">1 - e^(-&lambda;)</span></div>
+    <div class="nb-stat" style="background:var(--pink);"><b>Median lifespan</b><br>= the half-life itself</div>
+    <div class="nb-stat" style="background:var(--amber);"><b>Mean lifespan</b><br>&approx; half-life &times; 1.443</div>
   </div>
+</div>
+
+<div class="nb-box" id="jokeCard" style="cursor:pointer;text-align:center;background:var(--accent);">
+  <h2 style="font-size:var(--fs-md);margin:0 0 8px;color:var(--text);"><span class="emoji-icon">⚛</span> ATOMIC JOKE</h2>
+  <div style="font-weight:var(--fw-sb);font-size:var(--fs-md);line-height:1.5;" id="jokeText"></div>
+  <div style="font-size:var(--fs-xxs);font-weight:var(--fw-sb);margin-top:8px;opacity:0.6;">click for another</div>
 </div>
 
 <div class="nb-box">
   <h2>try it</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:6px;">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);margin-bottom:6px;">
     <div>
-      <label style="font-weight:900;font-size:12px;text-transform:uppercase;">Birthdate</label>
+      <label style="font-weight:var(--fw-b);font-size:var(--fs-sm);text-transform:uppercase;">Birthdate</label>
       <input type="date" id="dob" class="nb-input" value="2003-06-01">
     </div>
     <div>
-      <label style="font-weight:900;font-size:12px;text-transform:uppercase;">Isotope</label>
+      <label style="font-weight:var(--fw-b);font-size:var(--fs-sm);text-transform:uppercase;">Isotope</label>
       <select id="isotope" class="nb-select">
         <option value="400">Greenland Shark</option>
         <option value="5000">Bristlecone Pine</option>
@@ -64,91 +87,91 @@
       </select>
     </div>
   </div>
-  <div style="font-weight:900;font-size:12px;margin-bottom:14px;" id="dobEcho">Selected: 01-06-2003</div>
+  <div style="font-weight:var(--fw-b);font-size:var(--fs-sm);margin-bottom:var(--mb);" id="dobEcho">Selected: 01-06-2003</div>
   <div id="errMsg">Pick a valid birthdate.</div>
-  <button type="button" class="nb-btn" id="calcBtn" style="width:100%;">CALCULATE MY DECAY ↯</button>
+  <button type="button" class="nb-btn" id="calcBtn" style="width:100%;">CALCULATE MY DECAY</button>
 </div>
 
-<div class="nb-box" id="resultCard" style="background:#111;color:#fff;display:none;">
-  <div class="nb-tag" style="background:#B6F84A;color:#000;margin-bottom:14px;" id="isoLabel">CLASSIC</div>
-  <div style="font-size:13px;font-weight:700;color:#B6F84A;text-transform:uppercase;">half-life</div>
-  <div style="font-size:30px;font-weight:900;margin-bottom:14px;" id="halfLifeOut">10,000 years</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-    <div style="border:3px solid #fff;padding:10px;">
-      <div style="font-size:11px;color:#B6F84A;font-weight:700;text-transform:uppercase;">% decayed now</div>
-      <div style="font-size:20px;font-weight:900;" id="pctDecayed">0.0004%</div>
+<div class="nb-box" id="resultCard" style="background:var(--bg-dark);color:var(--text-inv);display:none;">
+  <div class="nb-tag" style="background:var(--green);color:var(--text);margin-bottom:var(--mb);" id="isoLabel">CLASSIC</div>
+  <div style="font-size:13px;font-weight:var(--fw-sb);color:var(--green);text-transform:uppercase;">half-life</div>
+  <div style="font-size:var(--fs-xl);font-weight:var(--fw-b);margin-bottom:var(--mb);" id="halfLifeOut">10,000 years</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--p-sm);margin-bottom:var(--mb);">
+    <div style="border:var(--bw) solid var(--text-inv);padding:var(--p-sm);">
+      <div style="font-size:var(--fs-xs);color:var(--green);font-weight:var(--fw-sb);text-transform:uppercase;">% decayed now</div>
+      <div style="font-size:var(--fs-lg);font-weight:var(--fw-b);" id="pctDecayed">0.0004%</div>
     </div>
-    <div style="border:3px solid #fff;padding:10px;">
-      <div style="font-size:11px;color:#B6F84A;font-weight:700;text-transform:uppercase;">annual odds</div>
-      <div style="font-size:20px;font-weight:900;" id="annualOdds">1 in 14,427</div>
+    <div style="border:var(--bw) solid var(--text-inv);padding:var(--p-sm);">
+      <div style="font-size:var(--fs-xs);color:var(--green);font-weight:var(--fw-sb);text-transform:uppercase;">annual odds</div>
+      <div style="font-size:var(--fs-lg);font-weight:var(--fw-b);" id="annualOdds">1 in 14,427</div>
     </div>
   </div>
-  <div style="font-size:13px;font-weight:700;margin-bottom:14px;" id="funFact">≈ same as being struck by lightning, every year, forever.</div>
+  <div style="font-size:13px;font-weight:var(--fw-sb);margin-bottom:var(--mb);color:var(--text-inv);" id="funFact">≈ same as being struck by lightning, every year, forever.</div>
 
-  <div id="survivalRoll" style="margin-top:14px;border-top:3px solid #B6F84A;padding-top:14px;display:none;">
-    <div style="font-size:11px;color:#B6F84A;font-weight:700;text-transform:uppercase;margin-bottom:8px;">test your atomic luck</div>
-    <div id="rollResult" style="font-size:14px;font-weight:900;margin-bottom:10px;text-align:center;padding:14px;border:3px solid #000;min-height:20px;background:#fff;color:#000;transition:all 0.15s;"></div>
-    <button type="button" class="nb-btn" id="rollBtn" style="width:100%;">TEST MY ATOMIC LUCK FOR THIS YEAR 🎲</button>
-    <div style="font-size:12px;font-weight:700;margin-top:8px;text-align:center;color:#B6F84A;">consecutive years survived: <span id="streakCount">0</span></div>
+  <div style="border-top:var(--bw) solid var(--green);padding-top:12px;margin-top:var(--mb);">
+    <div style="font-size:var(--fs-xs);color:var(--green);font-weight:var(--fw-sb);text-transform:uppercase;margin-bottom:6px;">what this actually means</div>
+    <div style="font-size:13px;font-weight:var(--fw-m);line-height:1.6;color:var(--text-inv);" id="explainText"></div>
   </div>
 
-  <div style="border-top:3px solid #B6F84A;padding-top:12px;margin-top:14px;">
-    <div style="font-size:11px;color:#B6F84A;font-weight:700;text-transform:uppercase;margin-bottom:6px;">what this actually means</div>
-    <div style="font-size:13px;font-weight:600;line-height:1.6;color:#fff;" id="explainText"></div>
+  <div id="survivalRoll" style="margin-top:var(--mb);border-top:var(--bw) solid var(--green);padding-top:var(--p-md);display:none;">
+    <div style="font-size:var(--fs-xs);color:var(--green);font-weight:var(--fw-sb);text-transform:uppercase;margin-bottom:var(--gap-sm);">test your atomic luck</div>
+    <div id="rollResult" style="font-size:var(--fs-md);font-weight:var(--fw-b);margin-bottom:var(--p-sm);text-align:center;padding:var(--p-md);border:var(--bw) solid var(--border);min-height:20px;background:var(--bg);color:var(--text);transition:all 0.15s;"></div>
+    <button type="button" class="nb-btn" id="rollBtn" style="width:100%;">TEST MY ATOMIC LUCK FOR THIS YEAR <span class="emoji-icon">🎲</span></button>
+    <div style="font-size:var(--fs-sm);font-weight:var(--fw-sb);margin-top:var(--gap-sm);text-align:center;color:var(--green);">consecutive years survived: <span id="streakCount">0</span></div>
   </div>
 </div>
 
 <div class="nb-box" id="timeMachineBox" style="display:none;">
-  <h2>FAST FORWARD TIME ⏭️</h2>
-  <div style="font-weight:600;margin-bottom:10px;font-size:13px;">Drag the slider to see how decay progresses through deep time</div>
+  <h2>FAST FORWARD TIME</h2>
+  <div style="font-weight:var(--fw-m);margin-bottom:var(--p-sm);font-size:13px;">Drag the slider to see how decay progresses through deep time</div>
   <div class="slider-year-label" id="sliderYearLabel">2026</div>
   <div style="position:relative;padding:2px 0;">
     <input type="range" id="timeSlider" min="2026" max="100000" value="2026" step="1">
   </div>
-  <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:12px;">
+  <div style="display:flex;justify-content:space-between;font-size:var(--fs-xs);font-weight:var(--fw-sb);margin-bottom:var(--gap);">
     <span id="sliderMinLabel">2026</span>
     <span id="sliderMaxLabel">100,000 yrs</span>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-    <div class="nb-stat" style="background:#B6F84A;text-align:center;padding:10px;">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;">% decayed</div>
-      <div style="font-size:20px;font-weight:900;" id="sliderPct">0.0004%</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--gap-sm);">
+    <div class="nb-stat" style="background:var(--green);text-align:center;padding:var(--p-sm);">
+      <div style="font-size:var(--fs-xxs);font-weight:var(--fw-sb);text-transform:uppercase;">% decayed</div>
+      <div style="font-size:var(--fs-lg);font-weight:var(--fw-b);" id="sliderPct">0.0004%</div>
     </div>
-    <div class="nb-stat" style="background:#7CD6FF;text-align:center;padding:10px;">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;">survival odds</div>
-      <div style="font-size:20px;font-weight:900;" id="sliderSurvival">99.9996%</div>
+    <div class="nb-stat" style="background:var(--blue);text-align:center;padding:var(--p-sm);">
+      <div style="font-size:var(--fs-xxs);font-weight:var(--fw-sb);text-transform:uppercase;">survival odds</div>
+      <div style="font-size:var(--fs-lg);font-weight:var(--fw-b);" id="sliderSurvival">99.9996%</div>
     </div>
-    <div class="nb-stat" style="background:#FFC24B;text-align:center;padding:10px;">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;">age</div>
-      <div style="font-size:20px;font-weight:900;" id="sliderAge">26 yrs</div>
+    <div class="nb-stat" style="background:var(--amber);text-align:center;padding:var(--p-sm);">
+      <div style="font-size:var(--fs-xxs);font-weight:var(--fw-sb);text-transform:uppercase;">age</div>
+      <div style="font-size:var(--fs-lg);font-weight:var(--fw-b);" id="sliderAge">26 yrs</div>
     </div>
   </div>
-  <button type="button" class="nb-btn" id="autoFfBtn" style="width:100%;margin-top:14px;">▶ AUTO FAST FORWARD</button>
+  <button type="button" class="nb-btn" id="autoFfBtn" style="width:100%;margin-top:var(--mb);"><span class="emoji-icon">▶</span> AUTO FAST FORWARD</button>
 </div>
 
 <div class="nb-box" id="cohortBox" style="display:none;">
-  <h2>COHORT GRID ☢️</h2>
-  <div style="font-weight:600;margin-bottom:12px;font-size:13px;">
-    1,000 clones born on <span id="cohortBirthdate" style="font-weight:900;">your birthday</span> &mdash; watch them decay as time advances
+  <h2>COHORT GRID <span class="emoji-icon">⚛</span></h2>
+  <div style="font-weight:var(--fw-m);margin-bottom:var(--gap);font-size:13px;">
+    1,000 clones born on <span id="cohortBirthdate" style="font-weight:var(--fw-b);">your birthday</span> &mdash; watch them decay as time advances
   </div>
   <div id="canvasContainer">
     <canvas id="cohortCanvas"></canvas>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
-    <div class="nb-stat" style="background:#B6F84A;text-align:center;padding:10px;">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;">atoms remaining</div>
-      <div style="font-size:22px;font-weight:900;" id="aliveCount">1,000</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-sm);margin-top:var(--p-sm);">
+    <div class="nb-stat" style="background:var(--green);text-align:center;padding:var(--p-sm);">
+      <div style="font-size:var(--fs-xxs);font-weight:var(--fw-sb);text-transform:uppercase;">atoms remaining</div>
+      <div style="font-size:22px;font-weight:var(--fw-b);" id="aliveCount">1,000</div>
     </div>
-    <div class="nb-stat" style="background:#FFC24B;text-align:center;padding:10px;">
-      <div style="font-size:10px;font-weight:700;text-transform:uppercase;">year</div>
-      <div style="font-size:22px;font-weight:900;" id="cohortYearLabel">2026</div>
+    <div class="nb-stat" style="background:var(--amber);text-align:center;padding:var(--p-sm);">
+      <div style="font-size:var(--fs-xxs);font-weight:var(--fw-sb);text-transform:uppercase;">year</div>
+      <div style="font-size:22px;font-weight:var(--fw-b);" id="cohortYearLabel">2026</div>
     </div>
   </div>
 </div>
 
 <div class="nb-box" id="factBox">
   <h2>fun fact bank</h2>
-  <ul id="factList" style="font-weight:600;line-height:1.9;margin:0;padding-left:20px;">
+  <ul id="factList" style="font-weight:var(--fw-m);line-height:1.9;margin:0;padding-left:var(--p-lg);">
     <li>Odds of lightning strike (US, per year): about 1 in 1,222,000</li>
     <li>Odds of a vending machine death: about 1 in 112,000,000</li>
     <li>Half-life of caffeine in your body: 5-6 hours</li>
@@ -159,7 +182,7 @@
 
 <div class="nb-box">
   <h2>more about radioactivity</h2>
-  <ul style="font-weight:600;line-height:1.9;margin:0;padding-left:20px;">
+  <ul style="font-weight:var(--fw-m);line-height:1.9;margin:0;padding-left:var(--p-lg);">
     <li>Marie Curie coined the term "radioactivity" in 1898 while studying uranium ores, and discovered polonium and radium along the way.</li>
     <li>Bananas are mildly radioactive because of potassium-40 &mdash; the running joke unit "banana equivalent dose" compares everyday radiation exposure to eating one banana.</li>
     <li>Technetium-99m, with a half-life of about 6 hours, is one of the most widely used isotopes in medical imaging because it decays almost fully out of the body within a couple of days.</li>
@@ -170,19 +193,21 @@
   </ul>
 </div>
 
-<div style="text-align:center;padding:24px 20px;border-top:3px solid #000;">
-  <div style="font-size:16px;font-weight:900;text-transform:uppercase;">☢ HALFLIFE</div>
-  <div style="font-size:12px;font-weight:700;color:#555;margin-top:6px;">a fun, unserious calculator for very serious questions about mortality</div>
-  <div style="font-size:11px;font-weight:700;color:#888;margin-top:10px;">built by aayushrathor &nbsp;&bull;&nbsp; not actuarial advice &nbsp;&bull;&nbsp; share your isotope with a friend</div>
+<div style="text-align:center;padding:24px var(--p-lg);border-top:var(--bw) solid var(--border);">
+  <div style="font-size:16px;font-weight:var(--fw-b);text-transform:uppercase;">HALFLIFE</div>
+  <div style="font-size:var(--fs-sm);font-weight:var(--fw-sb);color:var(--gray-mid);margin-top:6px;">a fun, unserious calculator for very serious questions about mortality</div>
+  <div style="font-size:var(--fs-xs);font-weight:var(--fw-sb);color:var(--gray-low);margin-top:10px;">built by aayushrathor &nbsp;&bull;&nbsp; not actuarial advice &nbsp;&bull;&nbsp; share your isotope with a friend</div>
 </div>
 
 <script src="js/data.js"></script>
 <script src="js/state.js"></script>
+<script src="js/theme.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/sound.js"></script>
 <script src="js/cohort.js"></script>
 <script src="js/slider.js"></script>
 <script src="js/roll.js"></script>
+<script src="js/jokes.js"></script>
 <script src="js/main.js"></script>
 </div>
 </body>

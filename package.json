@@ -1,0 +1,17 @@
+{
+  "name": "halflife",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Radioactive decay, but it's your lifespan",
+  "scripts": {
+    "lint": "eslint js/",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.6.0",
+    "globals": "^17.7.0",
+    "typescript": "^6.0.3"
+  }
+}

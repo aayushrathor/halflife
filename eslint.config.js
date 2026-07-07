@@ -1,0 +1,51 @@
+import js from '@eslint/js';
+import globals from 'globals';
+
+export default [
+  js.configs.recommended,
+  {
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'script',
+      globals: {
+        ...globals.browser,
+        realWorldOdds: 'writable',
+        isotopeFacts: 'writable',
+        currentBirthYear: 'writable',
+        currentLambda: 'writable',
+        streak: 'writable',
+        loadingTimer: 'writable',
+        geigerTimer: 'writable',
+        muted: 'writable',
+        computeStats: 'writable',
+        nearestOdds: 'writable',
+        fmtDDMMYYYY: 'writable',
+        playGeiger: 'writable',
+        generateClones: 'writable',
+        renderCohortGrid: 'writable',
+        cloneDeathYears: 'writable',
+        autoFF: 'writable',
+        autoFFGeiger: 'writable',
+        isAutoFFProgrammatic: 'writable',
+        onSliderChange: 'writable',
+        getGeigerRate: 'writable',
+        startAutoFF: 'writable',
+        stopAutoFF: 'writable',
+        onRollClick: 'writable',
+        showRandomJoke: 'writable',
+        initJokes: 'writable',
+        jokes: 'writable',
+        applyTheme: 'writable',
+        initTheme: 'writable',
+        themes: 'writable',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['warn', { vars: 'local', args: 'none' }],
+      'no-redeclare': 'off',
+      'no-self-assign': 'off',
+      'no-var': 'off',
+      'prefer-const': 'off',
+    },
+  },
+];

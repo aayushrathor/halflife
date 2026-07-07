@@ -2,6 +2,7 @@ let autoFF = null;
 let autoFFGeiger = null;
 let isAutoFFProgrammatic = false;
 
+/** Update stats display and cohort grid when the time slider moves @returns {void} */
 function onSliderChange(){
   const slider=document.getElementById('timeSlider');
   const year=parseFloat(slider.value);
@@ -16,6 +17,7 @@ function onSliderChange(){
   if(cloneDeathYears.length>0) renderCohortGrid(year);
 }
 
+/** Map isotope half-life to Geiger click interval range for auto-ff audio @param {number} halfLife @returns {number} */
 function getGeigerRate(halfLife){
   if(halfLife<=500) return 70+Math.random()*80;
   if(halfLife<=5000) return 120+Math.random()*180;
@@ -24,11 +26,12 @@ function getGeigerRate(halfLife){
   return 800+Math.random()*700;
 }
 
+/** Begin automated fast-forward: rAF slider advance with Geiger clicks at isotope rate @returns {void} */
 function startAutoFF(){
   if(autoFF) return;
   autoFF=true;
   const btn=document.getElementById('autoFfBtn');
-  btn.textContent='■ STOP';
+  btn.innerHTML='<span class="emoji-icon">⏹</span> STOP';
   const slider=document.getElementById('timeSlider');
   const startYear=parseFloat(slider.value);
   const maxYear=parseFloat(slider.max);
@@ -61,9 +64,10 @@ function startAutoFF(){
   autoFF=requestAnimationFrame(frame);
 }
 
+/** Halt auto fast-forward and reset button to start state @returns {void} */
 function stopAutoFF(){
   if(autoFF){cancelAnimationFrame(autoFF);autoFF=null;}
   if(autoFFGeiger){clearTimeout(autoFFGeiger);autoFFGeiger=null;}
   const btn=document.getElementById('autoFfBtn');
-  if(btn) btn.textContent='▶ AUTO FAST FORWARD';
+  if(btn) btn.innerHTML='<span class="emoji-icon">▶</span> AUTO FAST FORWARD';
 }
